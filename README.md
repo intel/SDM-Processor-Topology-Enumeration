@@ -4,7 +4,7 @@
 ## License
 BSD Zero Clause License
 
-Copyright (C) 2023 Contact: toby.opferman@intel.com
+Copyright (C) 2023 Intel Corporation
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted.
 
