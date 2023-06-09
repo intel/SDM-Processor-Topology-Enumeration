@@ -1,0 +1,8 @@
+TARGETNAME=cpuidtopology
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+
+SOURCES=cpuid_topology.c cpuid_topology_file.c cpuid_topology_display.c cpuid_topology_parsecachetlb.c cpuid_topology_parsecpu.c cpuid_topology_tools.c win_os_util.c
+
+UMTYPE=console
+USE_MSVCRT=1
