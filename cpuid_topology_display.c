@@ -248,7 +248,7 @@ void Display_ThreeDomainDisplay(unsigned int Leaf, unsigned int PackageShift, un
 
     LogicalProcessorPackageMask = (1<<LogicalProcessorShift) - 1;
     CorePackageMask             = ((1<<PackageShift) - 1) ^ ((1<<LogicalProcessorShift)-1);
-    PackageMask                 = ~LogicalProcessorPackageMask;
+    PackageMask                 = ~((1<<PackageShift) - 1);
     LogicalProcessorMask        = (1<<LogicalProcessorShift)-1;
 
     printf("**Package Mask: 0x%08x\n", PackageMask);
