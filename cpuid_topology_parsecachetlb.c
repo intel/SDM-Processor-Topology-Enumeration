@@ -303,8 +303,8 @@ unsigned int ParseCache_Internal_AddCacheEntry(PCPUID_CACHE_INFO pCacheInfo, uns
     pCacheInfo[NewCacheIndex].CacheIsFullyAssociative         = (pCpuidRegisters->x.Register.Eax & (1<<9)) ? BOOL_TRUE : BOOL_FALSE;
     pCacheInfo[NewCacheIndex].WbinvdFlushsLowerLevelsSharing  = (pCpuidRegisters->x.Register.Edx & 1) ? BOOL_FALSE : BOOL_TRUE;
     pCacheInfo[NewCacheIndex].CacheIsInclusive                = (pCpuidRegisters->x.Register.Edx & 2) ? BOOL_TRUE : BOOL_FALSE;
-    pCacheInfo[NewCacheIndex].CacheIsDirectMapped             = (pCpuidRegisters->x.Register.Edx & 4) ? BOOL_TRUE : BOOL_FALSE;
-    pCacheInfo[NewCacheIndex].CacheIsComplex                  = pCacheInfo[NewCacheIndex].CacheIsDirectMapped ? BOOL_FALSE : BOOL_TRUE;
+    pCacheInfo[NewCacheIndex].CacheIsComplex                  = (pCpuidRegisters->x.Register.Edx & 4) ? BOOL_TRUE : BOOL_FALSE;
+    pCacheInfo[NewCacheIndex].CacheIsDirectMapped             = pCacheInfo[NewCacheIndex].CacheIsComplex ? BOOL_FALSE : BOOL_TRUE;
 
     pCacheInfo[NewCacheIndex].NumberOfLPsSharingThisCache = 0;
     memcpy(&pCacheInfo[NewCacheIndex].CachedCpuidRegisters, pCpuidRegisters, sizeof(CPUID_REGISTERS));
