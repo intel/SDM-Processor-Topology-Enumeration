@@ -141,10 +141,33 @@ void ParseCache_CpuidCacheExample(void)
 
                     /*
                      * This mask can be used on other logical processor's APIC IDs to find 
-                     * processors sharing this cache.  This code is going to instead check our 
-                     * cache array and see if it is already there.  If not, then create a new 
-                     * cache in the array.  If it is there, then add this APIC ID to that cache 
-                     * and continue on. 
+                     * processors sharing this cache.  We do that by using this mask on this processor's APIC ID, 
+                     * then we use the mask on other logical processors. 
+                     * Logical processors that match this APIC ID are then sharing the cache. 
+                     *  
+                     *  This would be the following, checking every APIC ID to see which ones generate the same Cache ID. 
+                     *  
+                     *  CacheId = ApicIdList[ProcessorIndex] & CacheMask; 
+                     *  
+                     *  for(RemoteProcessorIndex = 0; RemoteProcessorIndex < NumberOfApicIds; RemoteProcessorIndex++)
+                     *  {
+                     *     if(RemoteProcessorIndex != ProcessorIndex)
+                     *     {
+                     *        if(ApicIdList[RemoteProcessorIndex] & CacheMask) == CacheId)
+                     *        {
+                     *           // Remote Processor shares this cache
+                     *        }
+                     *     }
+                     *  }    
+                     *  
+                     * This code is going to take another way, which is to instead find a matching cache id that has 
+                     * the exact same CPUID Leaf 4 details.  So if the Cache ID matches and CPUID Leaf 4 matches the same 
+                     * details of the cache, then it is the same cache since the CPUID details contain all the information 
+                     * that identifies the cache level, type, etc. they must match if it is the same cache.  We need to check 
+                     * the cache ID though, because many caches can have the same details but generate a different Cache ID 
+                     * from their APIC ID and the same cache mask.  Both need to be checked in this case. 
+                     *  
+                     * If we do not find one, then this will be added.
                      *  
                      */
                     CacheId = ApicIdList[ProcessorIndex] & CacheMask;
@@ -236,10 +259,9 @@ unsigned int ParseCache_Internal_FindMatchingCacheEntry(PCPUID_CACHE_INFO pCache
         if (pCacheInfo[CacheIndex].CacheId == CacheId) 
         {
             /*
-             * Further verification this is the same by checking the complete subleaf matches, we do not care 
-             * what the subleaf level was of the entry that created this cache or any that have been added, 
-             * only that they are a complete same description. 
-             *  
+             * These Cache IDs were generated independently, using possibly different cache masks.  So we need to further 
+             * verify that the CPUID Leaf that generated the cache ID is identical, then we know it is the same cache and that 
+             * the same cache mask was then used to generate both Cache IDs. 
              */
             if (memcmp(&pCacheInfo[CacheIndex].CachedCpuidRegisters, pCpuidRegisters, sizeof(CPUID_REGISTERS)) == 0) 
             {
