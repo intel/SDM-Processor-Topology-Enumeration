@@ -108,10 +108,6 @@ void Os_DisplayTopology(void)
 void WinOs_EnumerateAndDisplayTopology(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX pSystemLogicalProcInfoEx, DWORD BufferSize)
 {
     PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX ptr;
-    DWORD Index;
-    PCACHE_RELATIONSHIP Cache;
-    PGROUP_AFFINITY pGroupAffinity;
-    PPROCESSOR_GROUP_INFO pProcessorGroupInfo;
     DWORD CurrentSize;
     DWORD NumberOfPackages = 0;
     WORD GroupCount;

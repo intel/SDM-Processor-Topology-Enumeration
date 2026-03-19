@@ -165,7 +165,7 @@ void ParseCache_CpuidCacheExample(void)
                      * details of the cache, then it is the same cache since the CPUID details contain all the information 
                      * that identifies the cache level, type, etc. they must match if it is the same cache.  We need to check 
                      * the cache ID though, because many caches can have the same details but generate a different Cache ID 
-                     * from their APIC ID and the same cache mask.  Both need to be checked in this case. 
+                     * from their APIC ID and the same cache mask.
                      *  
                      * If we do not find one, then this will be added.
                      *  
@@ -413,22 +413,15 @@ void ParseTlb_CpuidTlbExample(void)
             {
                 Tools_SetAffinity(ProcessorIndex);
                 
-                MaxSubleaf = 0;
+                /*
+                 * SDM has been updated to specify that the Subleaf 0 is actually reserved except for the Maximum Subleaf field.
+                 * Change the code to start at Subleaf 1 after reading the maximum subleaf.
+                 */
+                Tools_ReadCpuid(0x18, 0, &CpuidRegisters);
+                MaxSubleaf = (CpuidRegisters.x.Register.Eax);
 
-                for (SubleafIndex = 0; SubleafIndex <= MaxSubleaf; SubleafIndex++) 
+                for (SubleafIndex = 1; SubleafIndex <= MaxSubleaf; SubleafIndex++) 
                 {
-
-                    Tools_ReadCpuid(0x18, SubleafIndex, &CpuidRegisters);
-
-                    if (SubleafIndex == 0) 
-                    {
-                        /*
-                         *  Subleaf 0 contains data in EBX, ECX, EDX and EAX is the maximum subleaf.
-                         *  Subsequent subleafs do not use EAX.
-                         */
-                        MaxSubleaf = (CpuidRegisters.x.Register.Eax);
-                    }
-
                     /*
                      * Clear EAX for all subleafs for direct compare to work easier.
                      */
