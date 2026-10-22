@@ -258,12 +258,12 @@ BOOL_TYPE Tools_IsDomainKnownEnumeration(unsigned int Domain)
  *    
  *
  * Arguments:
- *     APIC ID array, Size of the array
+ *     The maximum leaf to use for topology, APIC ID array, Size of the array
  *     
  * Return:
  *     Number of APIC IDs populated
  */
-unsigned int Tools_GatherPlatformApicIds(unsigned int *pApicIdArray, unsigned int ArraySize)
+unsigned int Tools_GatherPlatformApicIds(unsigned int LeafLimit, unsigned int *pApicIdArray, unsigned int ArraySize)
 {
     unsigned int NumberOfProcessors;
     unsigned int Index;
@@ -290,7 +290,11 @@ unsigned int Tools_GatherPlatformApicIds(unsigned int *pApicIdArray, unsigned in
         bApicIdFound = BOOL_FALSE;
 
         Tools_SetAffinity(Index);
-        if (CpuidRegisters.x.Register.Eax >= 0x1F) 
+
+
+
+
+        if (CpuidRegisters.x.Register.Eax >= 0x1F && LeafLimit >= 0x1F) 
         {
             Tools_ReadCpuid(0x1F, 0, &CpuidRegistersApicid);
 
@@ -304,7 +308,7 @@ unsigned int Tools_GatherPlatformApicIds(unsigned int *pApicIdArray, unsigned in
 
         if (bApicIdFound == BOOL_FALSE) 
         {
-            if (CpuidRegisters.x.Register.Eax >= 0xB)
+            if (CpuidRegisters.x.Register.Eax >= 0xB && LeafLimit >= 0xB)
             {
                 Tools_ReadCpuid(0xB, 0, &CpuidRegistersApicid);
                 if (CpuidRegistersApicid.x.Register.Ebx != 0) 
@@ -314,7 +318,7 @@ unsigned int Tools_GatherPlatformApicIds(unsigned int *pApicIdArray, unsigned in
                 }
             }
 
-            if (bApicIdFound == BOOL_FALSE) 
+            if (bApicIdFound == BOOL_FALSE && LeafLimit >= 1) 
             {
                 /*
                  *  Fall back to Legacy 8 bit APIC ID.
@@ -322,6 +326,13 @@ unsigned int Tools_GatherPlatformApicIds(unsigned int *pApicIdArray, unsigned in
                 Tools_ReadCpuid(1, 0, &CpuidRegistersApicid);
                 ApicId = (CpuidRegistersApicid.x.Register.Ebx >> 24);
                 bApicIdFound = BOOL_TRUE;
+            }
+            else
+            {
+                /*
+                 * Error condition should never occur.
+                 */
+                ApicId = (unsigned int)-1;
             }
         }
 

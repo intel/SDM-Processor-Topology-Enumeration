@@ -457,7 +457,7 @@ void ParseCpu_Internal_LegacyTopologyBits(void)
                 *      CPUID.4.0.EAX[31:26]
                 *       Maximum number of addressable IDs for processor cores in the physical Package
                 *
-                *  This is the legacy value for determining the core/SMT mask and has been superceded by Leaf 0Bh and Leaf 01Fh.
+                *  This is the legacy value for determining the core/SMT mask and has been superseded by Leaf 0Bh and Leaf 01Fh.
                 *  Since this is 6 bits, processors are already exceeding this value addressible IDs either due to topology domains or
                 *  simply having more processors in a package.  
                 */

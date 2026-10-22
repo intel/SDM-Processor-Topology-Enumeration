@@ -50,7 +50,7 @@ unsigned int ParseTlb_Internal_AddTlbEntry(PCPUID_TLB_INFO pTlbInfo, unsigned in
  * Return:
  *     None
  */
-void ParseCache_CpuidCacheExample(void)
+void ParseCache_CpuidCacheExample(BOOL_TYPE bForce8BitApicIds)
 {
     PCPUID_CACHE_INFO pCacheInfo;
     unsigned int CacheIndex;
@@ -84,7 +84,15 @@ void ParseCache_CpuidCacheExample(void)
          * for simplicity. 
          */
 
-        NumberOfProcessors = Tools_GatherPlatformApicIds(ApicIdList, MAX_PROCESSORS);
+        if (bForce8BitApicIds) 
+        {
+             NumberOfProcessors = Tools_GatherPlatformApicIds(0x1, ApicIdList, MAX_PROCESSORS);
+        }
+        else
+        {
+             NumberOfProcessors = Tools_GatherPlatformApicIds(0x1F, ApicIdList, MAX_PROCESSORS);
+        }
+
         NumberOfCaches = 0;
 
         pCacheInfo = (PCPUID_CACHE_INFO)calloc(NumberOfProcessors*MAX_CACHE_PER_LP, sizeof(CPUID_CACHE_INFO));
@@ -210,7 +218,7 @@ void ParseCache_CpuidCacheExample(void)
                 }
             }
 
-            Display_DisplayProcessorCaches(pCacheInfo, NumberOfCaches);
+            Display_DisplayProcessorCaches(bForce8BitApicIds, pCacheInfo, NumberOfCaches);
 
             free(pCacheInfo);
             pCacheInfo = NULL;
@@ -385,7 +393,7 @@ void ParseTlb_CpuidTlbExample(void)
          * for simplicity. 
          */
 
-        NumberOfProcessors = Tools_GatherPlatformApicIds(ApicIdList, MAX_PROCESSORS);
+        NumberOfProcessors = Tools_GatherPlatformApicIds(0x1F, ApicIdList, MAX_PROCESSORS);
         NumberOfTlbs = 0;
 
         pTlbInfo = (PCPUID_TLB_INFO)calloc(NumberOfProcessors*MAX_TLB_PER_LP, sizeof(CPUID_TLB_INFO));

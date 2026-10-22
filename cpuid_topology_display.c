@@ -58,6 +58,7 @@ void Display_DisplayParameters(void)
     printf("      4 - Display APIC ID layout\n");
     printf("      5 - Display TLB Information\n");
     printf("      6 - Display Cache Information\n");
+    printf("      7 - Display Cache Information using 8-Bit APIC IDs\n");
     printf("\n");
 }
 
@@ -258,7 +259,7 @@ void Display_ThreeDomainDisplay(unsigned int Leaf, unsigned int PackageShift, un
     /*
      * Optionally could dynamically allocate this based on the number of logical processors.
      */
-    NumberOfLogicalProcessors = Tools_GatherPlatformApicIds(ApicIdArray, MAX_PROCESSORS);
+    NumberOfLogicalProcessors = Tools_GatherPlatformApicIds(Leaf, ApicIdArray, MAX_PROCESSORS);
     
     for (ProcessorIndex = 0; ProcessorIndex < NumberOfLogicalProcessors; ProcessorIndex++) 
     {
@@ -295,7 +296,7 @@ void Display_ManyDomainExample(unsigned int Leaf, PAPICID_BIT_LAYOUT_CTX pApicid
     unsigned int NumberOfLogicalProcessors;
 
     printf("***********************************\n");
-    printf("CPUID Leaf %i - Parse all known domains\n\n", Leaf);
+    printf("CPUID Leaf %Xh - Parse all known domains\n\n", Leaf);
 
     for (DomainIndex = 0; DomainIndex < pApicidBitLayoutCtx->PackageDomainIndex; DomainIndex++)
     {
@@ -325,7 +326,7 @@ void Display_ManyDomainExample(unsigned int Leaf, PAPICID_BIT_LAYOUT_CTX pApicid
     /*
      * Optionally could dynamically allocate this based on the number of logical processors.
      */
-    NumberOfLogicalProcessors = Tools_GatherPlatformApicIds(ApicIdArray, MAX_PROCESSORS);
+    NumberOfLogicalProcessors = Tools_GatherPlatformApicIds(Leaf, ApicIdArray, MAX_PROCESSORS);
 
     for (ProcessorIndex = 0; ProcessorIndex < NumberOfLogicalProcessors; ProcessorIndex++) 
     {
@@ -368,11 +369,16 @@ void Display_ManyDomainExample(unsigned int Leaf, PAPICID_BIT_LAYOUT_CTX pApicid
  * Return:
  *     None
  */
-void Display_DisplayProcessorCaches(PCPUID_CACHE_INFO pCacheInfo, unsigned int NumberOfCaches)
+void Display_DisplayProcessorCaches(BOOL_TYPE bForce8BitApicIds, PCPUID_CACHE_INFO pCacheInfo, unsigned int NumberOfCaches)
 {
     unsigned int CacheIndex;
     unsigned int CacheProcessorIndex;
     char *pszCacheType[] = { "Data Cache", "Instruction Cache", "Unified Cache" };
+
+    if (bForce8BitApicIds) 
+    {
+       printf("This is the enumeration of cache based on legacy 8-bit APIC IDs.\n");
+    }
 
     for (CacheIndex = 0; CacheIndex < NumberOfCaches; CacheIndex++) 
     {

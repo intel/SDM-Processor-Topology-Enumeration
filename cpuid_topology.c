@@ -225,6 +225,7 @@ void CpuidTopology_DispatchTaskCommand(unsigned int NumberOfParameters, char **P
      *   4 - Display APIC ID layout
      *   5 - Display TLB Information
      *   6 - Display Cache Information
+     *   7 - Display Cache Information force legacy 8 bit
      *  
      */
 
@@ -270,7 +271,11 @@ void CpuidTopology_DispatchTaskCommand(unsigned int NumberOfParameters, char **P
                      break;
 
                 case '6':
-                     ParseCache_CpuidCacheExample();
+                     ParseCache_CpuidCacheExample(BOOL_FALSE);
+                     break;
+
+                case '7':
+                     ParseCache_CpuidCacheExample(BOOL_TRUE);
                      break;
 
                 default: 
@@ -353,7 +358,7 @@ void CpuidTopology_AllTopologyFromCpuid(void)
     else
     {
         printf("\nNOTE: Attempting the legacy CPUID method on this platform for demonstration.\n");
-        printf("This method is superceded by Leaf Bh and Leaf 1Fh\n");
+        printf("This method is superseded by Leaf Bh and Leaf 1Fh\n");
         printf("Large platforms may show incorrect information since X2APIC are 32 bit\n");
         printf("and this legacy method is for 8 bit APIC IDs.\n\n");
         ParseCpu_CpuidLegacyExample();

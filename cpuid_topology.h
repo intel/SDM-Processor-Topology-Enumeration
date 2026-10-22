@@ -336,7 +336,7 @@ void ParseCpu_CpuidManyDomainExample(unsigned int Leaf);
 /*
  *  Parse CPUID Cache and Tlbs APIs
  */
-void ParseCache_CpuidCacheExample(void);
+void ParseCache_CpuidCacheExample(BOOL_TYPE bForce8BitApicIds);
 void ParseTlb_CpuidTlbExample(void);
 
 /*
@@ -347,7 +347,7 @@ void Display_ApicIdBitLayout(PAPICID_BIT_LAYOUT_CTX pApicidBitLayoutCtx);
 void Display_ThreeDomainDisplay(unsigned int Leaf, unsigned int PackageShift, unsigned int LogicalProcessorShift);
 void Display_DisplayProcessorLeafs(unsigned int NumberOfProcessors);
 void Display_ManyDomainExample(unsigned int Leaf, PAPICID_BIT_LAYOUT_CTX pApicidBitLayoutCtx);
-void Display_DisplayProcessorCaches(PCPUID_CACHE_INFO pCacheInfo, unsigned int NumberOfCaches);
+void Display_DisplayProcessorCaches(BOOL_TYPE bForce8BitApicIds, PCPUID_CACHE_INFO pCacheInfo, unsigned int NumberOfCaches);
 void Display_DisplayProcessorTlbs(PCPUID_TLB_INFO pTlbInfo, unsigned int NumberOfTlbs);
 
 /*
@@ -359,7 +359,7 @@ void Tools_SetAffinity(unsigned int ProcessorNumber);
 unsigned int Tools_GetNumberOfProcessors(void);
 BOOL_TYPE Tools_IsNative(void);
 BOOL_TYPE Tools_IsDomainKnownEnumeration(unsigned int Domain);
-unsigned int Tools_GatherPlatformApicIds(unsigned int *pApicIdArray, unsigned int ArraySize);
+unsigned int Tools_GatherPlatformApicIds(unsigned int LeafLimit, unsigned int *pApicIdArray, unsigned int ArraySize);
 
 
 /*
